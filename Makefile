@@ -79,18 +79,10 @@ all: init_results baseline tf32 bf16 torch_compile flash fused
 
 # Generate plot from results
 plot:
-	@echo "Generating comparison plot..."
+	@echo "Generating comparison plots..."
 	@if [ -f results.csv ]; then \
-		$(PYTHON) -c "import pandas as pd; import matplotlib.pyplot as plt; \
-		df = pd.read_csv("$(RESULTS_FILE)"); \
-		plt.figure(figsize=(10, 6)); \
-		plt.bar(df["Optimization"], df["Time_ms"]); \
-		plt.ylabel("Time (ms)"); \
-		plt.title("Optimization Comparison"); \
-		plt.xticks(rotation=45, ha="right"); \
-		plt.tight_layout(); \
-		plt.savefig("$(PLOT_FILE)"); \
-		print("Plot saved to $(PLOT_FILE)")"; \
+		$(PYTHON) Scripts/plotting.py; \
+		echo "Plots have been generated: optimization_performance_comparison.png, performance_heatmap.png, and mean_speedup_comparison.png"; \
 	else \
 		echo "Error: results.csv not found. Run optimizations first."; \
 		exit 1; \
@@ -98,10 +90,13 @@ plot:
 
 # Reset results file
 reset:
-	@echo "Resetting results.csv file..."
+	@echo "Resetting results.csv file and plots..."
 	@if [ -f $(RESULTS_FILE) ]; then \
 		rm -f $(RESULTS_FILE); \
-		echo "Results file reset."; \
+		rm -f optimization_performance_comparison.png; \
+		rm -f performance_heatmap.png; \
+		rm -f mean_speedup_comparison.png; \
+		echo "Results file and plots reset."; \
 	else \
 		echo "No results file to reset."; \
 	fi
@@ -131,20 +126,24 @@ benchmark:
 	@echo "1. Testing with $(STEPS) steps"
 	@make reset
 	@make all
-	@make plot
+	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(STEPS)_steps_"
 	@echo "2. Testing with $(shell expr $(STEPS) \* 2) steps"
 	@make reset
 	@make all STEPS=$(shell expr $(STEPS) \* 2)
-	@make plot PLOT_FILE=benchmark_$(shell expr $(STEPS) \* 2)_steps.png
-	@echo "Benchmark complete. Results in $(RESULTS_FILE) and plots generated."
+	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(shell expr $(STEPS) \* 2)_steps_"
+	@echo "Benchmark complete. Results saved with prefixes:"
+	@echo "  - benchmark_$(STEPS)_steps_*"
+	@echo "  - benchmark_$(shell expr $(STEPS) \* 2)_steps_*"
 
 # Clean up generated files
 clean:
 	@echo "Cleaning up generated files..."
 	rm -f $(RESULTS_FILE)
 	rm -f $(PLOT_FILE)
-	rm -f *_comparison.png
-	rm -f benchmark_*_steps.png
+	rm -f optimization_performance_comparison.png
+	rm -f performance_heatmap.png
+	rm -f mean_speedup_comparison.png
+	rm -f benchmark_*_steps_*.png
 	@echo "Cleaned up generated files."
 	@make init_results
 
