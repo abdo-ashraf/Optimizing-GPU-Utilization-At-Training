@@ -135,6 +135,8 @@ The following plot shows the mean relative speedup comparison for different opti
 
 ![Mean Relative Speedup Comparison](./out/256B_150N_experiment/256B_150N_mean_speedup_comparison.png)
 
+By combining BF16, Torch compile, FlashAttention, and Fused Optimizer, I was able to reduce the average iteration time from 472.88 ms (no optimization) to 159.66 ms, making it ~3× faster! (Excluding compilation steps)
+
 ## 📚 References
 
 - [Andrej Karpathy: Let's reproduce GPT-2 (124M)](https://youtu.be/l8pRSuU81PU?si=sBZPAn3O0jxxV0y3)
