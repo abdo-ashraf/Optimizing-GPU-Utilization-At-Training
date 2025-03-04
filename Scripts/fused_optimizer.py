@@ -65,7 +65,7 @@ def main():
                         help='Number of training steps to run')
     parser.add_argument('--batch_size', type=int, required=True, 
                         help='Size of training batch')
-    parser.add_argument('--results_path', type=int, required=True, 
+    parser.add_argument('--results_path', type=str, required=True, 
                         help='Path to results CSV file')
     
     args = parser.parse_args()

@@ -3,7 +3,7 @@
 # Default number of steps for each experiment
 STEPS ?= 50
 BATCH_SIZE ?= 256
-RESULTS_FILE ?= results.csv
+RESULTS_FILE ?= "results.csv"
 PLOTSPREFIX ?= ""
 
 # Python interpreter
