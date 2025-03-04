@@ -13,7 +13,7 @@ PLOTSPREFIX = ""
 
 # Define phony targets (targets that aren"t actual files)
 .PHONY: all clean plot reset help baseline tf32 bf16 torch_compile flash fused \
-        compare_pairs benchmark results init_results
+        compare_pairs benchmark results init_results 8bit
 
 # Default target when just typing "make"
 help:
@@ -73,8 +73,12 @@ fused:
 	@echo "Running fused optimizer optimization..."
 	@$(PYTHON) Scripts/fused_optimizer.py --number_of_steps $(STEPS)
 
+8bit:
+	@echo "Running 8-bit optimizer optimization..."
+	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS)
+
 # Run all optimizations sequentially
-all: init_results baseline tf32 bf16 torch_compile flash fused
+all: init_results baseline tf32 bf16 torch_compile flash fused 8bit
 
 # Generate plot from results
 plot:
@@ -117,6 +121,8 @@ compare_pairs:
 	@$(PYTHON) Scripts/flash_attention.py --number_of_steps $(STEPS)
 	@echo "Running fused optimizer..."
 	@$(PYTHON) Scripts/fused_optimizer.py --number_of_steps $(STEPS)
+	@echo "Running 8-bit optimizer..."
+	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS)
 	@make plot
 
 # Benchmarking suite
