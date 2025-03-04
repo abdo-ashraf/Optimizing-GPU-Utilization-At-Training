@@ -12,7 +12,7 @@ def no_optimization(number_of_steps:int):
     print("Running training with no optimizations...")
     
     # Setup data and model
-    data_x, data_y = setup_data()
+    data_x, data_y = setup_data(batch_size=256, num_batch=number_of_steps)
     model = setup_model()
     model.to('cuda')
     
