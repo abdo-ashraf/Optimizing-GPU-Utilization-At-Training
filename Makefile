@@ -2,17 +2,17 @@
 
 # Default number of steps for each experiment
 STEPS ?= 50
+BATCH_SIZE ?= 256
 
 # Python interpreter
 PYTHON = python3
 
 # Output file names
 RESULTS_FILE = results.csv
-PLOT_FILE = optimization_comparison.png
 PLOTSPREFIX = ""
 
 # Define phony targets (targets that aren"t actual files)
-.PHONY: all clean plot help baseline tf32 bf16 torch_compile flash fused \
+.PHONY: all clean plots help baseline tf32 bf16 torch_compile flash fused \
         results init_results 8bit
 
 # Default target when just typing "make"
@@ -27,7 +27,7 @@ help:
 	@echo "  make flash            - Run FlashAttention optimization"
 	@echo "  make fused            - Run fused optimizer optimization"
 	@echo "  make all              - Run all optimizations sequentially"
-	@echo "  make plot             - Generate comparison plot"
+	@echo "  make plots             - Generate comparison plot"
 	@echo "  make reset            - Reset results file"
 	@echo "  make clean            - Remove generated files"
 	@echo "  make init_results     - Initialize results.csv file at RESULTS_FILE given path"
@@ -48,37 +48,37 @@ init_results:
 # Individual optimization targets
 baseline:
 	@echo "Running baseline (no optimization)..."
-	@$(PYTHON) Scripts/no_optimization.py --number_of_steps $(STEPS)
+	@$(PYTHON) Scripts/no_optimization.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
 
 tf32:
 	@echo "Running TensorFloat32 optimization..."
-	@$(PYTHON) Scripts/tensorFloat32.py --number_of_steps $(STEPS)
+	@$(PYTHON) Scripts/tensorFloat32.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
 
 bf16:
 	@echo "Running BrainFloat16 optimization..."
-	@$(PYTHON) Scripts/brainFloat16.py --number_of_steps $(STEPS)
+	@$(PYTHON) Scripts/brainFloat16.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
 
 torch_compile:
 	@echo "Running torch.compile optimization..."
-	@$(PYTHON) Scripts/torch_compile.py --number_of_steps $(STEPS)
+	@$(PYTHON) Scripts/torch_compile.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
 
 flash:
 	@echo "Running FlashAttention optimization..."
-	@$(PYTHON) Scripts/flash_attention.py --number_of_steps $(STEPS)
+	@$(PYTHON) Scripts/flash_attention.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
 
 fused:
 	@echo "Running fused optimizer optimization..."
-	@$(PYTHON) Scripts/fused_optimizer.py --number_of_steps $(STEPS)
+	@$(PYTHON) Scripts/fused_optimizer.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
 
 8bit:
 	@echo "Running 8-bit optimizer optimization..."
-	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS)
+	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
 
 # Run all optimizations sequentially
 all: init_results baseline tf32 bf16 torch_compile flash fused 8bit
 
 # Generate plot from results
-plot:
+plots:
 	@echo "Generating comparison plots..."
 	@if [ -f results.csv ]; then \
 		$(PYTHON) Scripts/plotting.py --prefix $(PLOTSPREFIX); \

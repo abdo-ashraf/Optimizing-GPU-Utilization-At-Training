@@ -87,7 +87,7 @@ make all
 After running one or more experiments:
 
 ```bash
-make plot
+make plots
 ```
 
 This will create three types of plots:
@@ -117,7 +117,7 @@ Examples:
 ```bash
 make baseline STEPS=30
 make all STEPS=100
-make plot PLOTSPREFIX=my_prefix_
+make plots PLOTSPREFIX=my_prefix_
 ```
 
 ## Results
