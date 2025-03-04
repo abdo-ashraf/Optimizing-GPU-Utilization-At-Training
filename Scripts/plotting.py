@@ -5,7 +5,7 @@ import argparse
 
 def main(prefix=""):
     # Load the CSV data
-    df = pd.read_csv("results.csv").drop(index=0).reset_index(drop=True)
+    df = pd.read_csv("results.csv").drop(index=[0,1]).reset_index(drop=True)
 
     # Plot settings
     plt.figure(figsize=(12, 6))
