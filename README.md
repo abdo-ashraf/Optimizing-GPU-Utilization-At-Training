@@ -109,13 +109,14 @@ The Makefile supports the following options:
 
 ```
 STEPS=n               # Set number of steps (default: 50)
+BATCH_SIZE=b          # set iteration batch size (default: 256)
 PLOTSPREFIX=prefix    # Set prefix for plot filenames
 ```
 
 Examples:
 
 ```bash
-make baseline STEPS=30
+make baseline STEPS=30 BATCH_SIZE=128
 make all STEPS=100
 make plots PLOTSPREFIX=my_prefix_
 ```
