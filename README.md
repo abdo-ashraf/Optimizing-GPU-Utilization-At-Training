@@ -129,10 +129,11 @@ make init_results     # Initialize results.csv file at `RESULTS_FILE` given path
 
 ## 📈 Experimental Results
 
-Experimental results are saved in `./out`. Plots generated include:
-- Performance over training steps
-- Performance heatmap
-- Mean relative speedup comparison
+### Mean Relative Speedup Comparison
+
+The following plot shows the mean relative speedup comparison for different optimization techniques compared to the baseline (no optimization). These results were generated using a batch size of 256 and 150 training steps. This plot helps in visualizing the performance gains achieved by each optimization method.
+
+![Mean Relative Speedup Comparison](./out/256B_150N_experiment/256B_150N_mean_speedup_comparison.png)
 
 ## 📚 References
 
