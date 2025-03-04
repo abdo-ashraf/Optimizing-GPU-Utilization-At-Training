@@ -10,7 +10,7 @@ This repository provides a comprehensive exploration of GPU optimization techniq
 2. [Project Structure](#-project-structure)
 3. [Installation](#-installation)
 4. [Usage](#-usage)
-5. [Optimization Techniques](#-optimization-techniques)
+5. [Optimization Techniques](#-optimizations-implemented)
 6. [Performance Considerations](#-performance-considerations)
 7. [Experimental Results](#-experimental-results)
 8. [References](#-references)
@@ -133,7 +133,7 @@ make init_results     # Initialize results.csv file at `RESULTS_FILE` given path
 
 The following plot shows the mean relative speedup comparison for different optimization techniques compared to the baseline (no optimization). These results were generated using a batch size of 256 and 150 training steps. This plot helps in visualizing the performance gains achieved by each optimization method.
 
-![Mean Relative Speedup Comparison](./out/256B_150N_experiment/256B_150N_mean_speedup_comparison.png)
+![Mean Relative Speedup Comparison](https://github.com/user-attachments/assets/87bfcbde-ae20-45ab-bbce-b03166a1ae4b)
 
 By combining BF16, Torch compile, FlashAttention, and Fused Optimizer, I was able to reduce the average iteration time from 472.88 ms (no optimization) to 159.66 ms, making it ~3× faster! (Excluding compilation steps)
 
