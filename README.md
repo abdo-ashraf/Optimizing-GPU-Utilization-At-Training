@@ -95,16 +95,6 @@ This will create three types of plots:
 - Heatmap visualization of the performance data
 - Horizontal bar chart showing mean relative speedup compared to no optimization
 
-### Benchmarking
-
-To run a benchmarking suite with all optimizations:
-
-```bash
-make benchmark
-```
-
-This will run the optimizations with the default number of steps and double the steps, generating plots with prefixes to distinguish between the runs.
-
 ### Additional Commands
 
 ```bash

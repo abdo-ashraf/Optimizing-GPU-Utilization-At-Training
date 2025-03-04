@@ -12,8 +12,8 @@ PLOT_FILE = optimization_comparison.png
 PLOTSPREFIX = ""
 
 # Define phony targets (targets that aren"t actual files)
-.PHONY: all clean plot reset help baseline tf32 bf16 torch_compile flash fused \
-        compare_pairs benchmark results init_results 8bit
+.PHONY: all clean plot help baseline tf32 bf16 torch_compile flash fused \
+        results init_results 8bit
 
 # Default target when just typing "make"
 help:
@@ -27,7 +27,6 @@ help:
 	@echo "  make flash            - Run FlashAttention optimization"
 	@echo "  make fused            - Run fused optimizer optimization"
 	@echo "  make all              - Run all optimizations sequentially"
-	@echo "  make benchmark        - Run a benchmarking suite with all optimizations"
 	@echo "  make plot             - Generate comparison plot"
 	@echo "  make reset            - Reset results file"
 	@echo "  make clean            - Remove generated files"
@@ -102,21 +101,6 @@ reset:
 		echo "No results file to reset."; \
 	fi
 	@make init_results
-
-# Benchmarking suite
-benchmark:
-	@echo "Running benchmarking suite..."
-	@echo "1. Testing with $(STEPS) steps"
-	@make reset
-	@make all
-	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(STEPS)_steps_$(PLOTSPREFIX)"
-	@echo "2. Testing with $(shell expr $(STEPS) \* 2) steps"
-	@make reset
-	@make all STEPS=$(shell expr $(STEPS) \* 2)
-	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(shell expr $(STEPS) \* 2)_steps_$(PLOTSPREFIX)"
-	@echo "Benchmark complete. Results saved with prefixes:"
-	@echo "  - benchmark_$(STEPS)_steps_$(PLOTSPREFIX)*"
-	@echo "  - benchmark_$(shell expr $(STEPS) \* 2)_steps_$(PLOTSPREFIX)*"
 
 # Clean up generated files
 clean:

@@ -50,7 +50,7 @@ def flash_attention(number_of_steps:int):
     results["BF16+TC+FA"] = dts
     print(f"Logits type: {logits.type()}")
     
-    print(f"Average step time (excluding first compilation step): {sum(dts[1:])/len(dts[1:]):.2f}ms")
+    print(f"Average step time (excluding compilation steps): {sum(dts[3:])/len(dts[3:]):.2f}ms")
     
     # Save results to CSV
     results.to_csv("results.csv", index=False)
