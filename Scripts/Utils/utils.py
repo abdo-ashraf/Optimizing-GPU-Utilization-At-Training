@@ -1,5 +1,4 @@
 import torch
-import pandas as pd
 from Utils.NMT_Transformer import NMT_Transformer
 
 def setup_data(batch_size=256, num_batch=50):
