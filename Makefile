@@ -9,6 +9,7 @@ PYTHON = python3
 # Output file names
 RESULTS_FILE = results.csv
 PLOT_FILE = optimization_comparison.png
+PLOTSPREFIX = ""
 
 # Define phony targets (targets that aren"t actual files)
 .PHONY: all clean plot reset help baseline tf32 bf16 torch_compile flash fused \
@@ -36,12 +37,10 @@ help:
 	@echo ""
 	@echo "Options:"
 	@echo "  STEPS=n               - Set number of steps (default: $(STEPS))"
-	@echo "  PLOT_FILE=filename    - Custom plot output filename (default: $(PLOT_FILE))"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make baseline STEPS=30"
 	@echo "  make all STEPS=50"
-	@echo "  make plot PLOT_FILE=custom_plot.png"
 	@echo "  make compare_pairs"
 
 # Initialize results.csv file with proper structure
@@ -81,7 +80,7 @@ all: init_results baseline tf32 bf16 torch_compile flash fused
 plot:
 	@echo "Generating comparison plots..."
 	@if [ -f results.csv ]; then \
-		$(PYTHON) Scripts/plotting.py; \
+		$(PYTHON) Scripts/plotting.py --prefix $(PLOTSPREFIX); \
 		echo "Plots have been generated: optimization_performance_comparison.png, performance_heatmap.png, and mean_speedup_comparison.png"; \
 	else \
 		echo "Error: results.csv not found. Run optimizations first."; \
@@ -126,20 +125,19 @@ benchmark:
 	@echo "1. Testing with $(STEPS) steps"
 	@make reset
 	@make all
-	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(STEPS)_steps_"
+	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(STEPS)_steps_$(PLOTSPREFIX)"
 	@echo "2. Testing with $(shell expr $(STEPS) \* 2) steps"
 	@make reset
 	@make all STEPS=$(shell expr $(STEPS) \* 2)
-	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(shell expr $(STEPS) \* 2)_steps_"
+	@$(PYTHON) Scripts/plotting.py --prefix "benchmark_$(shell expr $(STEPS) \* 2)_steps_$(PLOTSPREFIX)"
 	@echo "Benchmark complete. Results saved with prefixes:"
-	@echo "  - benchmark_$(STEPS)_steps_*"
-	@echo "  - benchmark_$(shell expr $(STEPS) \* 2)_steps_*"
+	@echo "  - benchmark_$(STEPS)_steps_$(PLOTSPREFIX)*"
+	@echo "  - benchmark_$(shell expr $(STEPS) \* 2)_steps_$(PLOTSPREFIX)*"
 
 # Clean up generated files
 clean:
 	@echo "Cleaning up generated files..."
 	rm -f $(RESULTS_FILE)
-	rm -f $(PLOT_FILE)
 	rm -f optimization_performance_comparison.png
 	rm -f performance_heatmap.png
 	rm -f mean_speedup_comparison.png

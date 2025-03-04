@@ -93,6 +93,7 @@ The Makefile supports the following options:
 
 ```
 STEPS=n               # Set number of steps (default: 50)
+PLOTSPREFIX=prefix    # Set prefix for plot filenames
 ```
 
 Examples:
@@ -100,7 +101,7 @@ Examples:
 ```bash
 make baseline STEPS=30
 make all STEPS=100
-make plot
+make plot PLOTSPREFIX=my_prefix_
 ```
 
 ## Results

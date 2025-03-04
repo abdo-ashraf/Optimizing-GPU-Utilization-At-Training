@@ -22,7 +22,7 @@ def main(prefix=""):
     plt.legend()
 
     # Save plot before showing
-    plt.savefig(f'{prefix}optimization_performance_comparison.png', bbox_inches='tight', dpi=300)
+    plt.savefig(f'./plots/{prefix}optimization_performance_comparison.png', bbox_inches='tight', dpi=300)
     plt.close()
 
     # Set the step as index
@@ -38,7 +38,7 @@ def main(prefix=""):
     plt.title("Performance Heatmap (Lower is Better)")
 
     # Save plot with descriptive name
-    plt.savefig(f'{prefix}performance_heatmap.png', bbox_inches='tight', dpi=300)
+    plt.savefig(f'./plots/{prefix}performance_heatmap.png', bbox_inches='tight', dpi=300)
     plt.close()
 
     # Compute relative speedup (no_optimization / other_method)
@@ -62,7 +62,7 @@ def main(prefix=""):
     plt.grid(axis='x', linestyle='--', alpha=0.7)
 
     # Save plot with descriptive name
-    plt.savefig(f'{prefix}mean_speedup_comparison.png', bbox_inches='tight', dpi=300)
+    plt.savefig(f'./plots/{prefix}mean_speedup_comparison.png', bbox_inches='tight', dpi=300)
     plt.close()
 
 if __name__ == "__main__":
