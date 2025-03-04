@@ -3,13 +3,11 @@
 # Default number of steps for each experiment
 STEPS ?= 50
 BATCH_SIZE ?= 256
+RESULTS_FILE ?= results.csv
+PLOTSPREFIX ?= ""
 
 # Python interpreter
 PYTHON = python3
-
-# Output file names
-RESULTS_FILE = results.csv
-PLOTSPREFIX = ""
 
 # Define phony targets (targets that aren"t actual files)
 .PHONY: all clean plots help baseline tf32 bf16 torch_compile flash fused \
@@ -40,9 +38,9 @@ help:
 	@echo "  make all STEPS=50"
 	@echo "  make compare_pairs"
 
-# Initialize results.csv file with proper structure
+# Initialize RESULTS_FILE file with proper structure
 init_results:
-	@echo "Initializing results.csv with proper structure..."
+	@echo "Initializing $(RESULTS_FILE) with proper structure..."
 	@$(PYTHON) -c "import pandas as pd; results = pd.DataFrame({'step': range($(STEPS))}); results.to_csv('./$(RESULTS_FILE)', index=False); print('Results file created with step column of $(STEPS) steps.')"
 
 # Individual optimization targets
