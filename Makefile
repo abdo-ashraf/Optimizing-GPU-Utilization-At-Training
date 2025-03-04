@@ -46,31 +46,31 @@ init_results:
 # Individual optimization targets
 baseline:
 	@echo "Running baseline (no optimization)..."
-	@$(PYTHON) Scripts/no_optimization.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
+	@$(PYTHON) Scripts/no_optimization.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
 tf32:
 	@echo "Running TensorFloat32 optimization..."
-	@$(PYTHON) Scripts/tensorFloat32.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
+	@$(PYTHON) Scripts/tensorFloat32.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
 bf16:
 	@echo "Running BrainFloat16 optimization..."
-	@$(PYTHON) Scripts/brainFloat16.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
+	@$(PYTHON) Scripts/brainFloat16.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
 torch_compile:
 	@echo "Running torch.compile optimization..."
-	@$(PYTHON) Scripts/torch_compile.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
+	@$(PYTHON) Scripts/torch_compile.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
 flash:
 	@echo "Running FlashAttention optimization..."
-	@$(PYTHON) Scripts/flash_attention.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
+	@$(PYTHON) Scripts/flash_attention.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
 fused:
 	@echo "Running fused optimizer optimization..."
-	@$(PYTHON) Scripts/fused_optimizer.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
+	@$(PYTHON) Scripts/fused_optimizer.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
 8bit:
 	@echo "Running 8-bit optimizer optimization..."
-	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE)
+	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
 # Run all optimizations sequentially
 all: init_results baseline tf32 bf16 torch_compile flash fused 8bit

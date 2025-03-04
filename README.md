@@ -110,7 +110,8 @@ The Makefile supports the following options:
 ```
 STEPS=n               # Set number of steps (default: 50)
 BATCH_SIZE=b          # set iteration batch size (default: 256)
-PLOTSPREFIX=prefix    # Set prefix for plot filenames
+RESULTS_FILE=path     # set A path for results CSV (default: "results.csv")
+PLOTSPREFIX=prefix    # Set prefix for plot filenames (default: "")
 ```
 
 Examples:

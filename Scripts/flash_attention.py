@@ -4,7 +4,7 @@ import pandas as pd
 import time
 from Utils.utils import setup_data, setup_model
 
-def flash_attention(number_of_steps:int, batch_size:int):
+def flash_attention(number_of_steps:int, batch_size:int, results_path:str='./results.csv'):
     # Enable FlashAttention and Memory-Efficient Attention
     torch.backends.cuda.enable_flash_sdp(enabled=True)
     torch.backends.cuda.enable_mem_efficient_sdp(enabled=True)
@@ -25,7 +25,7 @@ def flash_attention(number_of_steps:int, batch_size:int):
     # Setup optimizer
     optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
 
-    results = pd.read_csv('./results.csv')
+    results = pd.read_csv(results_path)
     
     # Training loop with FlashAttention, torch.compile, and BF16
     dts = []
@@ -53,7 +53,7 @@ def flash_attention(number_of_steps:int, batch_size:int):
     print(f"Average step time (excluding compilation steps): {sum(dts[3:])/len(dts[3:]):.2f}ms")
     
     # Save results to CSV
-    results.to_csv("results.csv", index=False)
+    results.to_csv(results_path, index=False)
     
     return results
 
@@ -64,9 +64,11 @@ def main():
                         help='Number of training steps to run')
     parser.add_argument('--batch_size', type=int, required=True, 
                         help='Size of training batch')
+    parser.add_argument('--results_path', type=int, required=True, 
+                        help='Path to results CSV file')
     
     args = parser.parse_args()
-    flash_attention(args.number_of_steps, args.batch_size)
+    flash_attention(args.number_of_steps, args.batch_size, args.results_path)
 
 
 if __name__ == "__main__":
