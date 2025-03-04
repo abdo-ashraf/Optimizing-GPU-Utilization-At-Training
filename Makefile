@@ -81,7 +81,7 @@ all: init_results baseline tf32 bf16 torch_compile flash fused 8bit
 plots:
 	@echo "Generating comparison plots..."
 	@if [ -f results.csv ]; then \
-		$(PYTHON) Scripts/plotting.py --prefix $(PLOTSPREFIX); \
+		$(PYTHON) Scripts/plotting.py --results_path $(RESULTS_FILE) --prefix $(PLOTSPREFIX); \
 		echo "Plots have been generated: optimization_performance_comparison.png, performance_heatmap.png, and mean_speedup_comparison.png"; \
 	else \
 		echo "Error: results.csv not found. Run optimizations first."; \

@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import argparse
 
-def main(prefix=""):
+def main(results_path="results.csv", prefix=""):
     # Load the CSV data
-    df = pd.read_csv("results.csv").drop(index=[0,1]).reset_index(drop=True)
+    df = pd.read_csv(results_path).drop(index=[0,1]).reset_index(drop=True)
 
     # Plot settings
     plt.figure(figsize=(12, 6))
@@ -68,5 +68,6 @@ def main(prefix=""):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate optimization comparison plots')
     parser.add_argument('--prefix', type=str, default="", help='Prefix for output filenames')
+    parser.add_argument('--results_path', type=str, default="results.csv", help='A path for results CSV file')
     args = parser.parse_args()
-    main(args.prefix)
+    main(args.results_path, args.prefix)
