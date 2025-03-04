@@ -5,7 +5,7 @@ import argparse
 
 def main(results_path="results.csv", prefix=""):
     # Load the CSV data
-    df = pd.read_csv(results_path).drop(index=[0,1]).reset_index(drop=True)
+    df = pd.read_csv(results_path).drop(index=[0,1,2,3,4]).reset_index(drop=True)
 
     # Plot settings
     plt.figure(figsize=(12, 6))
@@ -41,17 +41,15 @@ def main(results_path="results.csv", prefix=""):
     plt.savefig(f'{prefix}performance_heatmap.png', bbox_inches='tight', dpi=300)
     plt.close()
 
-    # Compute relative speedup (no_optimization / other_method)
-    df_speedup = df.copy()
-    for col in df.columns[2:]:  # Exclude 'step' and 'no_optimization'
-        df_speedup[col] = df['no_optimization'] / df[col]
+    # Compute mean execution time for each optimization method
+    mean_times = df.iloc[:, 1:].mean()
 
-    # Compute mean speedup
-    mean_speedup = df_speedup.iloc[:, 2:].mean()
+    # Compute overall speedup (using mean execution times)
+    overall_speedup = mean_times["no_optimization"] / mean_times.drop("no_optimization")
 
     # Plot mean relative speedup as a horizontal bar chart
     plt.figure(figsize=(10, 6))
-    mean_speedup.plot(kind='barh', color='skyblue', edgecolor='black')
+    overall_speedup.plot(kind="barh", color="skyblue", edgecolor="black")
 
     # Formatting
     plt.xlabel("Mean Relative Speedup")
