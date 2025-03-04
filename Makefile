@@ -1,10 +1,21 @@
 # Makefile for GPU Optimization Experiments
 
-# Default number of steps for each experiment
-STEPS ?= 50
-BATCH_SIZE ?= 256
-RESULTS_FILE ?= "results.csv"
-PLOTSPREFIX ?= ""
+# Mandatory variables (no default values)
+ifndef STEPS
+    $(error STEPS is not set)
+endif
+
+ifndef BATCH_SIZE
+    $(error BATCH_SIZE is not set)
+endif
+
+ifndef PREFIX
+    $(error PREFIX is not set)
+endif
+
+DIRPATH = $(PREFIX)/$(BATCH_SIZE)B_$(STEPS)N_experiment/
+RESULTS_FILE = $(DIRPATH)$(BATCH_SIZE)B_$(STEPS)N_results.csv
+PLOTSPREFIX = $(DIRPATH)$(BATCH_SIZE)B_$(STEPS)N_
 
 # Python interpreter
 PYTHON = python3
@@ -31,17 +42,19 @@ help:
 	@echo "  make init_results     - Initialize results.csv file at RESULTS_FILE given path"
 	@echo ""
 	@echo "Options:"
-	@echo "  STEPS=n               - Set number of steps (default: $(STEPS))"
+	@echo "  STEPS=n               	- Set number of steps (default: $(STEPS))"
+	@echo "  BATCH_SIZE=b          	- Set Batch size (default: $(BATCH_SIZE))"
+	@echo "  PREFIX=b               - Set output prefix (default: $(PREFIX))"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make baseline STEPS=30"
 	@echo "  make all STEPS=50"
-	@echo "  make compare_pairs"
 
 # Initialize RESULTS_FILE file with proper structure
 init_results:
 	@echo "Initializing $(RESULTS_FILE) with proper structure..."
-	@$(PYTHON) -c "import pandas as pd; results = pd.DataFrame({'step': range($(STEPS))}); results.to_csv('./$(RESULTS_FILE)', index=False); print('Results file created with step column of $(STEPS) steps.')"
+	@$(PYTHON) -c "import os; os.makedirs('$(DIRPATH)', exist_ok=True)"
+	@$(PYTHON) -c "import pandas as pd; results = pd.DataFrame({'step': range($(STEPS))}); results.to_csv('$(RESULTS_FILE)', index=False); print('Results file created with step column of $(STEPS) steps.')"
 
 # Individual optimization targets
 baseline:
@@ -72,29 +85,26 @@ fused:
 	@echo "Running 8-bit optimizer optimization..."
 	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS) --batch_size $(BATCH_SIZE) --results_path $(RESULTS_FILE)
 
-# Run all optimizations sequentially
-all: init_results baseline tf32 bf16 torch_compile flash fused 8bit
-
 # Generate plot from results
 plots:
-	@echo "Generating comparison plots..."
-	@if [ -f results.csv ]; then \
+	@echo "Generating comparison plots with prefix of $(PLOTSPREFIX)..."
+	@if [ -f $(RESULTS_FILE) ]; then \
 		$(PYTHON) Scripts/plotting.py --results_path $(RESULTS_FILE) --prefix $(PLOTSPREFIX); \
-		echo "Plots have been generated: optimization_performance_comparison.png, performance_heatmap.png, and mean_speedup_comparison.png"; \
+		echo "Plots have been generated."; \
 	else \
-		echo "Error: results.csv not found. Run optimizations first."; \
+		echo "Error: $(RESULTS_FILE) not found. Run optimizations first."; \
 		exit 1; \
 	fi
+
+# Run all optimizations sequentially
+all: init_results baseline tf32 bf16 torch_compile flash fused 8bit plots
 
 # Reset results file
 reset:
 	@echo "Resetting results.csv file and plots..."
 	@if [ -f $(RESULTS_FILE) ]; then \
 		rm -f $(RESULTS_FILE); \
-		rm -f optimization_performance_comparison.png; \
-		rm -f performance_heatmap.png; \
-		rm -f mean_speedup_comparison.png; \
-		echo "Results file and plots reset."; \
+		echo "Results file reset."; \
 	else \
 		echo "No results file to reset."; \
 	fi
@@ -103,10 +113,5 @@ reset:
 # Clean up generated files
 clean:
 	@echo "Cleaning up generated files..."
-	rm -f $(RESULTS_FILE)
-	rm -f optimization_performance_comparison.png
-	rm -f performance_heatmap.png
-	rm -f mean_speedup_comparison.png
-	rm -f benchmark_*_steps_*.png
-	@echo "Cleaned up generated files."
-	@make init_results
+	@rm -f -r $(DIRPATH)
+	@echo "Cleaned up $(DIRPATH)."
