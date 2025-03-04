@@ -4,7 +4,7 @@ import pandas as pd
 import time
 from Utils.utils import setup_data, setup_model
 
-def flash_attention(number_of_steps:int):
+def flash_attention(number_of_steps:int, batch_size:int):
     # Enable FlashAttention and Memory-Efficient Attention
     torch.backends.cuda.enable_flash_sdp(enabled=True)
     torch.backends.cuda.enable_mem_efficient_sdp(enabled=True)
@@ -15,7 +15,7 @@ def flash_attention(number_of_steps:int):
     print(f"Math Attention Enabled: {torch.backends.cuda.math_sdp_enabled()}")
     
     # Setup data and model
-    data_x, data_y = setup_data(batch_size=256, num_batch=number_of_steps)
+    data_x, data_y = setup_data(batch_size=batch_size, num_batch=number_of_steps)
     model = setup_model()
     model.to('cuda')
     
@@ -62,9 +62,11 @@ def main():
     parser = argparse.ArgumentParser(description='Run flash_attention')
     parser.add_argument('--number_of_steps', type=int, required=True, 
                         help='Number of training steps to run')
+    parser.add_argument('--batch_size', type=int, required=True, 
+                        help='Size of training batch')
     
     args = parser.parse_args()
-    flash_attention(args.number_of_steps)
+    flash_attention(args.number_of_steps, args.batch_size)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ import pandas as pd
 import time
 from Utils.utils import setup_data, setup_model
 
-def fused_optimizer(number_of_steps:int):
+def fused_optimizer(number_of_steps:int, batch_size:int):
     # Enable FlashAttention and Memory-Efficient Attention
     torch.backends.cuda.enable_flash_sdp(enabled=True)
     torch.backends.cuda.enable_mem_efficient_sdp(enabled=True)
@@ -12,7 +12,7 @@ def fused_optimizer(number_of_steps:int):
     print("Running training with Fused Optimizer, FlashAttention, torch.compile, and BF16 optimization...")
     
     # Setup data and model
-    data_x, data_y = setup_data(batch_size=256, num_batch=number_of_steps)
+    data_x, data_y = setup_data(batch_size=batch_size, num_batch=number_of_steps)
     model = setup_model()
     model.to('cuda')
     
@@ -63,9 +63,11 @@ def main():
     parser = argparse.ArgumentParser(description='Run fused_optimizer')
     parser.add_argument('--number_of_steps', type=int, required=True, 
                         help='Number of training steps to run')
+    parser.add_argument('--batch_size', type=int, required=True, 
+                        help='Size of training batch')
     
     args = parser.parse_args()
-    fused_optimizer(args.number_of_steps)
+    fused_optimizer(args.number_of_steps, args.batch_size)
 
 
 if __name__ == "__main__":

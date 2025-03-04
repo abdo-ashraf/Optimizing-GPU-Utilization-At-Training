@@ -4,7 +4,7 @@ import pandas as pd
 import time
 from Utils.utils import setup_data, setup_model
 
-def torch_compile(number_of_steps:int):
+def torch_compile(number_of_steps:int, batch_size:int):
     # Disable other optimizations
     torch.backends.cuda.enable_flash_sdp(enabled=False)
     torch.backends.cuda.enable_mem_efficient_sdp(enabled=False)
@@ -12,7 +12,7 @@ def torch_compile(number_of_steps:int):
     print("Running training with torch.compile and BF16 optimization...")
     
     # Setup data and model
-    data_x, data_y = setup_data(batch_size=256, num_batch=number_of_steps)
+    data_x, data_y = setup_data(batch_size=batch_size, num_batch=number_of_steps)
     model = setup_model()
     model.to('cuda')
     
@@ -60,9 +60,11 @@ def main():
     parser = argparse.ArgumentParser(description='Run torch_compile')
     parser.add_argument('--number_of_steps', type=int, required=True, 
                         help='Number of training steps to run')
+    parser.add_argument('--batch_size', type=int, required=True, 
+                        help='Size of training batch')
     
     args = parser.parse_args()
-    torch_compile(args.number_of_steps)
+    torch_compile(args.number_of_steps, args.batch_size)
 
 
 if __name__ == "__main__":
