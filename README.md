@@ -108,10 +108,9 @@ This will run the optimizations with the default number of steps and double the 
 ### Additional Commands
 
 ```bash
-make compare_pairs    # Run all techniques and compare them
 make reset            # Reset results file and plots
 make clean            # Remove generated files
-make results          # Display summary of current results
+make init_results     # Initialize results.csv file at `RESULTS_FILE` given path
 ```
 
 ### Command-line Options

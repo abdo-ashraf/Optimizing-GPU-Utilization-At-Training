@@ -27,13 +27,11 @@ help:
 	@echo "  make flash            - Run FlashAttention optimization"
 	@echo "  make fused            - Run fused optimizer optimization"
 	@echo "  make all              - Run all optimizations sequentially"
-	@echo "  make compare_pairs    - Run comparison between pairs of optimizations"
 	@echo "  make benchmark        - Run a benchmarking suite with all optimizations"
 	@echo "  make plot             - Generate comparison plot"
 	@echo "  make reset            - Reset results file"
 	@echo "  make clean            - Remove generated files"
-	@echo "  make results          - Display summary of current results"
-	@echo "  make init_results     - Initialize results.csv file"
+	@echo "  make init_results     - Initialize results.csv file at RESULTS_FILE given path"
 	@echo ""
 	@echo "Options:"
 	@echo "  STEPS=n               - Set number of steps (default: $(STEPS))"
@@ -105,26 +103,6 @@ reset:
 	fi
 	@make init_results
 
-# Compare pairs of optimizations
-compare_pairs:
-	init_results
-	@echo "Comparing pairs of optimizations..."
-	@echo "Running baseline..."
-	@$(PYTHON) Scripts/no_optimization.py --number_of_steps $(STEPS)
-	@echo "Running TF32..."
-	@$(PYTHON) Scripts/tensorFloat32.py --number_of_steps $(STEPS)
-	@echo "Running BF16..."
-	@$(PYTHON) Scripts/brainFloat16.py --number_of_steps $(STEPS)
-	@echo "Running torch.compile..."
-	@$(PYTHON) Scripts/torch_compile.py --number_of_steps $(STEPS)
-	@echo "Running FlashAttention..."
-	@$(PYTHON) Scripts/flash_attention.py --number_of_steps $(STEPS)
-	@echo "Running fused optimizer..."
-	@$(PYTHON) Scripts/fused_optimizer.py --number_of_steps $(STEPS)
-	@echo "Running 8-bit optimizer..."
-	@$(PYTHON) Scripts/8-bit_optimizer.py --number_of_steps $(STEPS)
-	@make plot
-
 # Benchmarking suite
 benchmark:
 	@echo "Running benchmarking suite..."
@@ -150,13 +128,3 @@ clean:
 	rm -f benchmark_*_steps_*.png
 	@echo "Cleaned up generated files."
 	@make init_results
-
-# Print current results summary if available
-results:
-	@if [ -f $(RESULTS_FILE) ]; then \
-		echo "Current results summary:"; \
-		tail -n +2 $(RESULTS_FILE) | awk -F, "{ sum += $$NF } END { print "Average time: " sum/(NR) "ms" }"; \
-		echo "For full results, check $(RESULTS_FILE)"; \
-	else \
-		echo "No results file found. Run experiments first."; \
-	fi 
