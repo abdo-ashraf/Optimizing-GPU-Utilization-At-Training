@@ -14,6 +14,7 @@ Training deep learning models efficiently requires understanding how to optimize
 - `torch_compile.py`: Implementation using torch.compile
 - `flash_attention.py`: Implementation using FlashAttention
 - `fused_optimizer.py`: Implementation using fused Adam optimizer
+- `8bit_optimizer.py`: Implementation using 8-bit Adam optimizer for reduced memory usage
 - `Utils/`: Directory containing utility functions for setting up data, model, etc.
 - `Makefile`: Automation script for running experiments and generating comparisons
 
@@ -45,6 +46,7 @@ make bf16        # Run BrainFloat16 optimization
 make torch_compile    # Run torch.compile optimization
 make flash       # Run FlashAttention optimization
 make fused       # Run fused optimizer optimization
+make 8bit        # Run 8-bit optimizer optimization
 ```
 
 ### Running All Optimization Techniques
@@ -116,6 +118,7 @@ Results are saved to `results.csv` with timing information for each optimization
 4. **Torch Compile**: Using torch.compile for just-in-time compilation
 5. **Flash Attention**: Implementing FlashAttention for faster and more memory-efficient attention
 6. **Fused Optimizer**: Using a fused optimizer implementation for reduced kernel launches
+7. **8-bit Optimizer**: Uses 8-bit precision for optimizer states to reduce memory usage and potentially increase training speed without sacrificing model accuracy.
 
 ## Performance Considerations
 
@@ -124,6 +127,7 @@ Results are saved to `results.csv` with timing information for each optimization
 - **torch.compile** can improve performance through just-in-time compilation but may have compilation overhead.
 - **FlashAttention** is particularly effective for transformer models with long sequence lengths.
 - **Fused Optimizers** reduce GPU kernel launches and memory operations, improving overall training efficiency.
+- **8-bit Optimizers** reduce the memory footprint of 32-bit optimizers without any performance degradation, allowing for faster training of large models.
 
 ## References
 
