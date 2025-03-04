@@ -2,9 +2,30 @@
 
 This repository contains a collection of experiments demonstrating various optimization techniques for PyTorch models on GPU. Each optimization technique is implemented in a separate Python file with a self-contained training loop, making it easy to compare the performance impact of different approaches.
 
+## Table of Contents
+- [Overview](#overview)
+- [Hardware Used](#hardware-used)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Results](#results)
+- [Optimizations Implemented](#optimizations-implemented)
+- [Performance Considerations](#performance-considerations)
+- [References](#references)
+- [License](#license)
+- [Contributing](#contributing)
+
 ## Overview
 
 Training deep learning models efficiently requires understanding how to optimize GPU utilization. This project provides a practical exploration of various optimization techniques, with each implementation focusing on a specific optimization strategy. Performance metrics are collected and can be visualized to compare the effectiveness of different approaches.
+
+## Hardware Used
+
+The experiments and results in this project were conducted using the following hardware:
+
+- **GPU**: NVIDIA RTX 3050 Ti (4GB VRAM)
+- **CPU**: Intel Core i5-11400H
+- **RAM**: 16GB
 
 ## Project Structure
 
@@ -17,18 +38,22 @@ Training deep learning models efficiently requires understanding how to optimize
 - `8bit_optimizer.py`: Implementation using 8-bit Adam optimizer for reduced memory usage
 - `Utils/`: Directory containing utility functions for setting up data, model, etc.
 - `Makefile`: Automation script for running experiments and generating comparisons
+- `README.md`: Documentation for the project
+- `req.txt`: List of project dependencies
 
 ## Installation
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.12+
 - CUDA-enabled GPU (for optimal results)
 
 ### Dependencies
 
+Install the required dependencies using:
+
 ```bash
-pip install torch torchvision matplotlib pandas
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -131,10 +156,14 @@ Results are saved to `results.csv` with timing information for each optimization
 
 ## References
 
+- [Andrej Karpathy: Let's reproduce GPT-2 (124M)](https://youtu.be/l8pRSuU81PU?si=sBZPAn3O0jxxV0y3)
 - [NVIDIA Ampere Architecture Whitepaper](https://images.nvidia.com/aem-dam/en-zz/Solutions/data-center/nvidia-ampere-architecture-whitepaper.pdf)
-- [PyTorch Documentation on torch.compile](https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html)
+- [PyTorch Documentation on set_float32_matmul_precision](https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html)
 - [PyTorch Documentation on Automatic Mixed Precision](https://pytorch.org/docs/stable/amp.html)
+- [PyTorch Documentation on torch.compile](https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html)
+- [PyTorch Documentation on scaled_dot_product_attention](https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html)
 - [FlashAttention Paper](https://arxiv.org/abs/2205.14135)
+- [Online softmax Paper](https://arxiv.org/abs/1805.02867)
 
 ## License
 
