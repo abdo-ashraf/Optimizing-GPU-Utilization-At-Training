@@ -1,151 +1,140 @@
-# Optimizing-GPU-Utilization-at-Training
+# Optimizing GPU Utilization in Deep Learning Training
 
-This repository contains a collection of experiments demonstrating various optimization techniques for PyTorch models on GPU. Each optimization technique is implemented in a separate Python file with a self-contained training loop, making it easy to compare the performance impact of different approaches.
+## 🚀 Project Overview
 
-## Table of Contents
-- [Overview](#overview)
-- [Hardware Used](#hardware-used)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Results](#results)
-- [Optimizations Implemented](#optimizations-implemented)
-- [Performance Considerations](#performance-considerations)
-- [References](#references)
-- [License](#license)
-- [Contributing](#contributing)
+This repository provides a comprehensive exploration of GPU optimization techniques for PyTorch models, focusing on improving training efficiency and performance. By implementing and comparing various optimization strategies, the project offers practical insights into enhancing deep learning training workflows.
 
-## Overview
+## 📋 Table of Contents
 
-Training deep learning models efficiently requires understanding how to optimize GPU utilization. This project provides a practical exploration of various optimization techniques, with each implementation focusing on a specific optimization strategy. Performance metrics are collected and can be visualized to compare the effectiveness of different approaches.
+1. [Hardware Specifications](#-hardware-specifications)
+2. [Project Structure](#-project-structure)
+3. [Installation](#-installation)
+4. [Usage](#-usage)
+5. [Optimization Techniques](#-optimization-techniques)
+6. [Performance Considerations](#-performance-considerations)
+7. [Experimental Results](#-experimental-results)
+8. [References](#-references)
+9. [License](#-license)
+10. [Contributing](#-contributing)
 
-## Hardware Used
+## 💻 Hardware Specifications
 
-The experiments and results in this project were conducted using the following hardware:
-
+**Experimental Environment:**
 - **GPU**: NVIDIA RTX 3050 Ti (4GB VRAM)
 - **CPU**: Intel Core i5-11400H
 - **RAM**: 16GB
 
-## Project Structure
+## 🗂 Project Structure
 
-- `no_optimization.py`: Baseline implementation with no optimizations
-- `tensorFloat32.py`: Implementation using TensorFloat-32 (TF32) precision
-- `brainFloat16.py`: Implementation using BFloat16 precision
-- `torch_compile.py`: Implementation using torch.compile
-- `flash_attention.py`: Implementation using FlashAttention
-- `fused_optimizer.py`: Implementation using fused Adam optimizer
-- `8bit_optimizer.py`: Implementation using 8-bit Adam optimizer for reduced memory usage
-- `Utils/`: Directory containing utility functions for setting up data, model, etc.
-- `Makefile`: Automation script for running experiments and generating comparisons
-- `README.md`: Documentation for the project
-- `req.txt`: List of project dependencies
+### Notebooks
+- `Optimizing_GPU_Utilization.ipynb`: contains a full explanation for each optimization implemented.
 
-## Installation
+### Key Scripts
+- `no_optimization.py`: Baseline implementation without optimizations
+- `tensorFloat32.py`: TensorFloat-32 (TF32) precision optimization
+- `brainFloat16.py`: BFloat16 precision optimization
+- `torch_compile.py`: Torch JIT compilation optimization
+- `flash_attention.py`: FlashAttention implementation
+- `fused_optimizer.py`: Fused optimizer optimization
+- `8-bit_optimizer.py`: 8-bit Adam optimizer for reduced memory usage
+
+### Utility Components
+- `Utils/`: Contains model and data setup utilities
+- `Makefile`: Automation script for running experiments
+- `requirements.txt`: Project dependencies
+
+## 🔧 Installation
 
 ### Prerequisites
-
 - Python 3.12+
-- CUDA-enabled GPU (for optimal results)
+- CUDA-enabled GPU
+- pip package manager
 
-### Dependencies
-
-Install the required dependencies using:
-
+### Dependencies Installation
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## 🚀 Usage
 
 This project includes a Makefile that simplifies running experiments and generating comparisons.
 
+### Mandatory Parameters
+When running experiments, you must specify three mandatory parameters:
+
+- `STEPS=n`: Number of training steps to perform
+- `BATCH_SIZE=b`: Size of each training batch
+- `PREFIX=path`: Output directory for results and plots
+
 ### Running Individual Optimization Techniques
-
-To run a specific optimization technique:
-
 ```bash
-make baseline    # Run baseline (no optimization)
-make tf32        # Run TensorFloat32 optimization
-make bf16        # Run BrainFloat16 optimization 
-make torch_compile    # Run torch.compile optimization
-make flash       # Run FlashAttention optimization
-make fused       # Run fused optimizer optimization
-make 8bit        # Run 8-bit optimizer optimization
+make baseline STEPS=50 BATCH_SIZE=256 PREFIX=./out         # No optimization
+make tf32 STEPS=50 BATCH_SIZE=256 PREFIX=./out             # TensorFloat32
+make bf16 STEPS=50 BATCH_SIZE=256 PREFIX=./out             # BrainFloat16
+make torch_compile STEPS=50 BATCH_SIZE=256 PREFIX=./out    # Torch Compile
+make flash STEPS=50 BATCH_SIZE=256 PREFIX=./out            # FlashAttention
+make fused STEPS=50 BATCH_SIZE=256 PREFIX=./out            # Fused Optimizer
+make 8bit STEPS=50 BATCH_SIZE=256 PREFIX=./out             # 8-bit Optimizer
 ```
 
-### Running All Optimization Techniques
-
-To run all optimization techniques sequentially:
-
-```bash
-make all
-```
-
-### Generating Comparison Plots
+### Generate Comparison Plots
 
 After running one or more experiments:
 
 ```bash
-make plots
+make plots STEPS=50 BATCH_SIZE=256 PREFIX=./out
 ```
 
-This will create three types of plots:
-- Line plot showing performance over steps for different optimizations
-- Heatmap visualization of the performance data
-- Horizontal bar chart showing mean relative speedup compared to no optimization
+### Running All Optimizations and Generate Comparison Plots
+```bash
+make all STEPS=50 BATCH_SIZE=256 PREFIX=./out
+```
 
 ### Additional Commands
 
 ```bash
+make help
 make reset            # Reset results file and plots
 make clean            # Remove generated files
 make init_results     # Initialize results.csv file at `RESULTS_FILE` given path
 ```
 
-### Command-line Options
+## 🔬 Optimizations Implemented
 
-The Makefile supports the following options:
+1. **No Optimization**: Baseline implementation
+2. **TensorFloat-32 (TF32)**: 
+   - Improved precision for matrix multiplications
+   - Balanced performance and accuracy
+3. **BrainFloat16 (BF16)**:
+   - Reduced memory usage
+   - Faster training on supported hardware
+4. **Torch Compile**:
+   - Just-in-time (JIT) compilation
+   - Reduced overhead
+5. **FlashAttention**:
+   - Efficient attention mechanism
+   - Improved performance for transformer models
+6. **Fused Optimizer**:
+   - Reduced GPU kernel launches
+   - Enhanced training efficiency
+7. **8-bit Optimizer**:
+   - Reduced memory footprint
+   - Potential training speed improvement
 
-```
-STEPS=n               # Set number of steps (default: 50)
-BATCH_SIZE=b          # set iteration batch size (default: 256)
-RESULTS_FILE=path     # set A path for results CSV (default: "results.csv")
-PLOTSPREFIX=prefix    # Set prefix for plot filenames (default: "")
-```
+## 📊 Performance Considerations
 
-Examples:
+- Choose optimization techniques based on your specific hardware and model architecture
+- Some techniques may have compilation overhead
+- Performance gains vary depending on model complexity and hardware
 
-```bash
-make baseline STEPS=30 BATCH_SIZE=128
-make all STEPS=100
-make plots PLOTSPREFIX=my_prefix_
-```
+## 📈 Experimental Results
 
-## Results
+Experimental results are saved in `./out`. Plots generated include:
+- Performance over training steps
+- Performance heatmap
+- Mean relative speedup comparison
 
-Results are saved to `results.csv` with timing information for each optimization technique. When generating plots, comparison charts will be created showing the relative performance of each technique.
-
-## Optimizations Implemented
-
-1. **No Optimization**: Baseline implementation with default settings
-2. **TensorFloat-32**: Using TF32 precision on Ampere (and newer) GPUs
-3. **BrainFloat16**: Using BFloat16 precision for reduced memory usage and faster training
-4. **Torch Compile**: Using torch.compile for just-in-time compilation
-5. **Flash Attention**: Implementing FlashAttention for faster and more memory-efficient attention
-6. **Fused Optimizer**: Using a fused optimizer implementation for reduced kernel launches
-7. **8-bit Optimizer**: Uses 8-bit precision for optimizer states to reduce memory usage and potentially increase training speed without sacrificing model accuracy.
-
-## Performance Considerations
-
-- **TensorFloat-32 (TF32)** provides a good balance between precision and speed for most deep learning workloads.
-- **BFloat16** offers reduced memory usage and can significantly speed up training on supported hardware.
-- **torch.compile** can improve performance through just-in-time compilation but may have compilation overhead.
-- **FlashAttention** is particularly effective for transformer models with long sequence lengths.
-- **Fused Optimizers** reduce GPU kernel launches and memory operations, improving overall training efficiency.
-- **8-bit Optimizers** reduce the memory footprint of 32-bit optimizers without any performance degradation, allowing for faster training of large models.
-
-## References
+## 📚 References
 
 - [Andrej Karpathy: Let's reproduce GPT-2 (124M)](https://youtu.be/l8pRSuU81PU?si=sBZPAn3O0jxxV0y3)
 - [NVIDIA Ampere Architecture Whitepaper](https://images.nvidia.com/aem-dam/en-zz/Solutions/data-center/nvidia-ampere-architecture-whitepaper.pdf)
@@ -156,10 +145,10 @@ Results are saved to `results.csv` with timing information for each optimization
 - [FlashAttention Paper](https://arxiv.org/abs/2205.14135)
 - [Online softmax Paper](https://arxiv.org/abs/1805.02867)
 
-## License
+## 📄 License
 
-MIT
+This project is licensed under the MIT License. See `LICENSE` for details.
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. 
+Contributions are welcome! Please submit pull requests or open issues to discuss potential improvements.
